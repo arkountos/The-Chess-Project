@@ -135,6 +135,7 @@
 
 var board = null
 var game = new Chess()
+
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
   if (game.game_over()) return false
@@ -144,7 +145,7 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function makeRandomMove () {
-  var possibleMoves = game.moves
+  var possibleMoves = game.moves()
 
   // game over
   if (possibleMoves.length === 0) return
@@ -166,7 +167,7 @@ function onDrop (source, target) {
   if (move === null) return 'snapback'
 
   // make random legal move for black
-  window.setTimeout(makeRandomMove, 250)
+  window.setTimeout(makeRandomMove, 500)
 }
 
 // update the board position after the piece snap
