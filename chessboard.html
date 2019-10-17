@@ -6,6 +6,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js" integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js" integrity="sha384-s3XgLpvmHyscVpijnseAmye819Ee3yaGa8NxstkJVyA6nuDFjt59u1QvuEl/mecz" crossorigin="anonymous"></script>
+  <script src="engine.js"></script>
 </head>
 
 <body>
@@ -155,6 +156,19 @@ function makeRandomMove () {
   board.position(game.fen())
 }
 
+function makeMove () {
+    var possibleMoves = game.moves()
+    var result = 0
+    if (possibleMoves.length === 0) return
+        for (i = 0; i < possibleMoves.length; i++){
+            // Make the moves and evaluate, and then return to previous state?
+            // Make another game object where you test the moves?
+            // 
+            // game.move() maybe?
+            result = evaluate(/* ??? */)
+        }
+}
+
 function onDrop (source, target) {
   // see if the move is legal
   var move = game.move({
@@ -168,6 +182,9 @@ function onDrop (source, target) {
 
   // make random legal move for black
   window.setTimeout(makeRandomMove, 500)
+  //console.log(board.position())
+//   var result = evaluate(game);
+//   console.log(result)
 }
 
 // update the board position after the piece snap
@@ -185,6 +202,7 @@ var config = {
   onSnapEnd: onSnapEnd
 }
 board = Chessboard('myBoard', config)
+
 // --- End Example JS ----------------------------------------------------------
 </script>
 
