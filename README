@@ -1,1 +1,2 @@
 In this Project I will try to create a chess engine in javascript, using chess.js and chessboard.js libraries for the base game.
+The base game is all taken from the examples at chessboardjs.com, I am only going to try to make the engine.
