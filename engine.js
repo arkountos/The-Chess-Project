@@ -31,5 +31,27 @@ function evaluate(chess){
     return(result)
 }
 
+function makeMove (game, board) {
+    var possibleMoves = game.moves()
+    var result = 1000
+    var new_result = 0
+    var best_move = 0
+    if (possibleMoves.length === 0) return
+    for (i = 0; i < possibleMoves.length; i++){
+        new_move = game.move(possibleMoves[i]);
+        new_result = evaluate(game);
+        console.log(possibleMoves[i], " ", new_result)
+        if (new_result < result){
+            best_move = i
+            console.log("In best move, best is: ", possibleMoves[i], " ", new_result, " ", i)
+            result = new_result
+        }
+        game.undo();
+    }
+    //window.alert("here");
+    game.move(possibleMoves[best_move]);
+    //board.position(game.fen())
+}
+
 console.log(points.get('rgook'))
 

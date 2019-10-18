@@ -156,19 +156,6 @@ function makeRandomMove () {
   board.position(game.fen())
 }
 
-function makeMove () {
-    var possibleMoves = game.moves()
-    var result = 0
-    if (possibleMoves.length === 0) return
-        for (i = 0; i < possibleMoves.length; i++){
-            // Make the moves and evaluate, and then return to previous state?
-            // Make another game object where you test the moves?
-            // 
-            // game.move() maybe?
-            result = evaluate(/* ??? */)
-        }
-}
-
 function onDrop (source, target) {
   // see if the move is legal
   var move = game.move({
@@ -181,10 +168,10 @@ function onDrop (source, target) {
   if (move === null) return 'snapback'
 
   // make random legal move for black
-  window.setTimeout(makeRandomMove, 500)
+  window.setTimeout(makeMove(game, board), 500)
   //console.log(board.position())
-//   var result = evaluate(game);
-//   console.log(result)
+    //   var result = evaluate(game);
+    //   console.log(result)
 }
 
 // update the board position after the piece snap
