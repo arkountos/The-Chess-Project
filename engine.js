@@ -31,6 +31,7 @@ function evaluate(chess){
     return(result)
 }
 
+// Chooses the move that wins more material (bad chess!)
 function makeMove (game, board) {
     var possibleMoves = game.moves()
     var result = 1000
@@ -53,5 +54,7 @@ function makeMove (game, board) {
     //board.position(game.fen())
 }
 
-console.log(points.get('rgook'))
+// TO-DO
+// Evaluate position on more criteria (e.g. position of pieces on board)
+// Look deeper in choosing moves
 
