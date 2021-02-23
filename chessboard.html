@@ -147,12 +147,18 @@ function onDragStart (source, piece, position, orientation) {
 
 function makeRandomMove () {
   var possibleMoves = game.moves()
-
+//   for (var move of possibleMoves){
+//       console.log("Move: " + move)
+//   }
   // game over
   if (possibleMoves.length === 0) return
 
-  var randomIdx = Math.floor(Math.random() * possibleMoves.length)
-  game.move(possibleMoves[randomIdx])
+// Instead of a random one let's try our engine
+//   var randomIdx = Math.floor(Math.random() * possibleMoves.length)
+//   console.log("Move: " + possibleMoves[randomIdx])
+//   game.move(possibleMoves[randomIdx])
+  var bestMove = makeAMove(game)
+  game.move(bestMove)
   board.position(game.fen())
 }
 
@@ -168,7 +174,7 @@ function onDrop (source, target) {
   if (move === null) return 'snapback'
 
   // make random legal move for black
-  window.setTimeout(makeMove(game, board), 500)
+  window.setTimeout(makeRandomMove, 500)
   //console.log(board.position())
     //   var result = evaluate(game);
     //   console.log(result)

@@ -12,7 +12,12 @@ points.set('r', -5);
 points.set('q', -9);
 points.set('k', -100);
 
-// Evaluates a position based only on material
+MAX_DEPTH = 2
+
+/*
+ * Evaluates a position based only on material.
+ * Returns: Int - The value of the new position.
+ */
 function evaluate(chess){
     var fen = chess.fen();
     //console.log(fen);
@@ -31,30 +36,99 @@ function evaluate(chess){
     return(result)
 }
 
-// Chooses the move that wins more material (bad chess!)
-function makeMove (game, board) {
-    var possibleMoves = game.moves()
-    var result = 1000
-    var new_result = 0
-    var best_move = 0
-    if (possibleMoves.length === 0) return
-    for (i = 0; i < possibleMoves.length; i++){
-        new_move = game.move(possibleMoves[i]);
-        new_result = evaluate(game);
-        console.log(possibleMoves[i], " ", new_result)
-        if (new_result < result){
-            best_move = i
-            console.log("In best move, best is: ", possibleMoves[i], " ", new_result, " ", i)
-            result = new_result
-        }
-        game.undo();
+/*
+ * Takes a position and finds all the moves for black.
+ * Returns: Object - A dictionary with moves and values of positions.
+ */
+function evaluateMoves(game){
+    allLegalMoves = game.moves()
+    var moveValues = {}
+    for (var move of allLegalMoves){
+        newChess = new Chess(game.fen())
+        // console.log("The move is: " + move)
+        newChess.move(move)
+        moveValues[move] = evaluate(newChess)
     }
-    //window.alert("here");
-    game.move(possibleMoves[best_move]);
-    //board.position(game.fen())
+    return moveValues
+}
+
+/*
+ * Finds all moves, sorts them from the best for black and returns the best move
+ * Returns: String - A move for black
+ */
+function moveToMake(color, game){
+    var moveValues = evaluateMoves(game)
+    // Create items array
+    var items = Object.keys(moveValues).map(function(key) {
+        return [key, moveValues[key]];
+    });
+  
+    // Sort the array based on the second element
+    if (color === "black"){
+        items.sort(function(first, second) {
+            return first[1] - second[1];
+        });
+    }
+    else {
+        items.sort(function(first, second) {
+            return second[1] - first[1];
+        });
+    }
+
+    // console.log("Does this actually work?")
+    console.log(items);
+ 
+    return items[0][0]
+}
+
+function makeAMove(game){
+    suggestedMove = minimax(game, "First Call", 0, true, "")[0]
+    console.log("Returned move: " + suggestedMove)
+    return suggestedMove
+}
+
+function minimax(game, thisMove, depth, color, thisLine){
+    if (depth === MAX_DEPTH) {
+
+        console.log("Depth reached, color: " + color + ", move: " + thisMove + ", thisLine: " + thisLine + ", eval: " + evaluate(game))
+        return [thisMove, evaluate(game)]
+    }
+    possibleMoves = game.moves()
+    // White's turn
+    if (color == false){
+        maxEval = ["Not A Move", -Infinity]
+        for (move of possibleMoves){
+            newChess = new Chess(game.fen())
+            newChess.move(move)
+            thisLine += " " + move
+            eval = minimax(newChess, move, depth + 1, !color, thisLine)
+            thisLine = ""
+            // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", maxEval: " + maxEval + ", thisLine: " + thisLine)
+            if (eval[1] > maxEval[1]){
+                maxEval = eval    
+            }
+        }
+        return maxEval
+    }
+    // Black's turn
+    else {
+        minEval = ["Not A Move", +Infinity]
+        for (move of possibleMoves){
+            newChess = new Chess(game.fen())
+            newChess.move(move)
+            thisLine += " " + move
+            eval = minimax(newChess, move, depth + 1, !color, thisLine)
+            thisLine = ""
+            // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", minEval: " + minEval + ", thisLine: " + thisLine)
+            if (eval[1] < minEval[1]){
+                minEval = eval
+            }
+        }
+        return minEval
+    }
+
 }
 
 // TO-DO
 // Evaluate position on more criteria (e.g. position of pieces on board)
 // Look deeper in choosing moves
-
