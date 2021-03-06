@@ -126,6 +126,9 @@
         </div>
     </div>
 </div>
+<div id="myProgress">
+    <div id="myBar"></div>
+</div>
 <!--- End Example HTML -------------------------------------------------------->
 
 
@@ -157,7 +160,7 @@ function makeRandomMove () {
 //   var randomIdx = Math.floor(Math.random() * possibleMoves.length)
 //   console.log("Move: " + possibleMoves[randomIdx])
 //   game.move(possibleMoves[randomIdx])
-  var bestMove = makeAMove(game)
+  var bestMove = makeBestMove(game)
   game.move(bestMove)
   board.position(game.fen())
 }

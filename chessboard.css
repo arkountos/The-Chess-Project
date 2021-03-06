@@ -42,3 +42,13 @@
  top:2px;
  left:2px
 }
+#myProgress {
+    width: 70%;
+    background-color: grey;
+  }
+  
+#myBar {
+    width: 1%;
+    height: 30px;
+    background-color: green;
+    }

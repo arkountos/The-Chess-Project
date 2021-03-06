@@ -12,7 +12,7 @@ points.set('r', -5);
 points.set('q', -9);
 points.set('k', -100);
 
-MAX_DEPTH = 2
+depth = 3
 
 /*
  * Evaluates a position based only on material.
@@ -40,95 +40,157 @@ function evaluate(chess){
  * Takes a position and finds all the moves for black.
  * Returns: Object - A dictionary with moves and values of positions.
  */
-function evaluateMoves(game){
-    allLegalMoves = game.moves()
-    var moveValues = {}
-    for (var move of allLegalMoves){
-        newChess = new Chess(game.fen())
-        // console.log("The move is: " + move)
-        newChess.move(move)
-        moveValues[move] = evaluate(newChess)
-    }
-    return moveValues
-}
+// function evaluateMoves(game){
+//     allLegalMoves = game.moves()
+//     var moveValues = {}
+//     for (var move of allLegalMoves){
+//         newChess = new Chess(game.fen())
+//         // console.log("The move is: " + move)
+//         newChess.move(move)
+//         moveValues[move] = evaluate(newChess)
+//     }
+//     return moveValues
+// }
 
-/*
- * Finds all moves, sorts them from the best for black and returns the best move
- * Returns: String - A move for black
- */
-function moveToMake(color, game){
-    var moveValues = evaluateMoves(game)
-    // Create items array
-    var items = Object.keys(moveValues).map(function(key) {
-        return [key, moveValues[key]];
-    });
+// /*
+//  * Finds all moves, sorts them from the best for black and returns the best move
+//  * Returns: String - A move for black
+//  */
+// function moveToMake(color, game){
+//     var moveValues = evaluateMoves(game)
+//     // Create items array
+//     var items = Object.keys(moveValues).map(function(key) {
+//         return [key, moveValues[key]];
+//     });
   
-    // Sort the array based on the second element
-    if (color === "black"){
-        items.sort(function(first, second) {
-            return first[1] - second[1];
-        });
-    }
-    else {
-        items.sort(function(first, second) {
-            return second[1] - first[1];
-        });
-    }
+//     // Sort the array based on the second element
+//     if (color === "black"){
+//         items.sort(function(first, second) {
+//             return first[1] - second[1];
+//         });
+//     }
+//     else {
+//         items.sort(function(first, second) {
+//             return second[1] - first[1];
+//         });
+//     }
 
-    // console.log("Does this actually work?")
-    console.log(items);
+//     // console.log("Does this actually work?")
+//     console.log(items);
  
-    return items[0][0]
+//     return items[0][0]
+// }
+
+// function makeAMove(game){
+//     suggestedMove = minimax(game, "First Call", 0, true, "")[0]
+//     console.log("Returned move: " + suggestedMove)
+//     return suggestedMove
+// }
+
+// function minimax(game, thisMove, depth, color, thisLine){
+//     if (depth === MAX_DEPTH) {
+
+//         console.log("Depth reached, color: " + color + ", move: " + thisMove + ", thisLine: " + thisLine + ", eval: " + evaluate(game))
+//         return [thisMove, evaluate(game)]
+//     }
+//     possibleMoves = game.moves()
+//     // White's turn
+//     if (color == false){
+//         maxEval = ["Not A Move", -Infinity]
+//         for (move of possibleMoves){
+//             newChess = new Chess(game.fen())
+//             newChess.move(move)
+//             thisLine += " " + move
+//             eval = minimax(newChess, move, depth + 1, !color, thisLine)
+//             thisLine = ""
+//             // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", maxEval: " + maxEval + ", thisLine: " + thisLine)
+//             if (eval[1] > maxEval[1]){
+//                 maxEval = eval    
+//             }
+//         }
+//         return maxEval
+//     }
+//     // Black's turn
+//     else {
+//         minEval = ["Not A Move", +Infinity]
+//         for (move of possibleMoves){
+//             newChess = new Chess(game.fen())
+//             newChess.move(move)
+//             thisLine += " " + move
+//             eval = minimax(newChess, move, depth + 1, !color, thisLine)
+//             thisLine = ""
+//             // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", minEval: " + minEval + ", thisLine: " + thisLine)
+//             if (eval[1] < minEval[1]){
+//                 minEval = eval
+//             }
+//         }
+//         return minEval
+//     }
+
+// }
+
+function makeBestMove(game) {
+    let bestMove = minimaxRoot(game, depth, true);
+    return bestMove
 }
 
-function makeAMove(game){
-    suggestedMove = minimax(game, "First Call", 0, true, "")[0]
-    console.log("Returned move: " + suggestedMove)
-    return suggestedMove
-}
-
-function minimax(game, thisMove, depth, color, thisLine){
-    if (depth === MAX_DEPTH) {
-
-        console.log("Depth reached, color: " + color + ", move: " + thisMove + ", thisLine: " + thisLine + ", eval: " + evaluate(game))
-        return [thisMove, evaluate(game)]
+const minimaxRoot = function(game, depth, maximisingPlayer) {
+    var bestMove = -Infinity;
+    var bestMoveFound;
+  
+    for (var i = 0; i < game.moves().length; i++) {
+      game.move(game.moves()[i]);
+      var value = minimax(
+        game,
+        depth - 1,
+        -Infinity,
+        Infinity,
+        !maximisingPlayer
+      );
+      game.undo();
+      if (value >= bestMove) {
+        bestMove = value;
+        bestMoveFound = game.moves()[i];
+      }
+      checkedMoves++
     }
-    possibleMoves = game.moves()
-    // White's turn
-    if (color == false){
-        maxEval = ["Not A Move", -Infinity]
-        for (move of possibleMoves){
-            newChess = new Chess(game.fen())
-            newChess.move(move)
-            thisLine += " " + move
-            eval = minimax(newChess, move, depth + 1, !color, thisLine)
-            thisLine = ""
-            // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", maxEval: " + maxEval + ", thisLine: " + thisLine)
-            if (eval[1] > maxEval[1]){
-                maxEval = eval    
-            }
+    console.log("bestMoveFound: " + bestMoveFound)
+    return bestMoveFound;
+  };
+  
+  function minimax(position, depth, alpha, beta, maximisingPlayer) {
+    if (depth === 0) {
+      return -evaluate(position);
+    }
+    if (maximisingPlayer) {
+      let value = -Infinity;
+      for (let i = 0; i < position.moves().length; i++) {
+        position.move(position.moves()[i]);
+        value = Math.max(value, minimax(position, depth - 1, alpha, beta, false));
+        position.undo();
+        alpha = Math.max(alpha, value);
+        if (alpha >= beta) {
+          return value;
         }
-        return maxEval
-    }
-    // Black's turn
-    else {
-        minEval = ["Not A Move", +Infinity]
-        for (move of possibleMoves){
-            newChess = new Chess(game.fen())
-            newChess.move(move)
-            thisLine += " " + move
-            eval = minimax(newChess, move, depth + 1, !color, thisLine)
-            thisLine = ""
-            // console.log("Depth: " + depth + ", this Move: " + thisMove + ", checking: " + move + ", result: " + eval + ", minEval: " + minEval + ", thisLine: " + thisLine)
-            if (eval[1] < minEval[1]){
-                minEval = eval
-            }
+      }
+  
+      return value;
+    } else {
+      let value = Infinity;
+      for (let i = 0; i < position.moves().length; i++) {
+        position.move(game.moves()[i]);
+        value = Math.min(value, minimax(position, depth - 1, alpha, beta, true));
+        position.undo();
+        beta = Math.min(beta, value);
+        if (alpha >= beta) {
+          return value;
         }
-        return minEval
+      }
+      return value;
     }
+  }
 
-}
 
+  
 // TO-DO
 // Evaluate position on more criteria (e.g. position of pieces on board)
-// Look deeper in choosing moves
